@@ -57,7 +57,7 @@ static int fuse4j_create(const char *path, mode_t mode, struct fuse_file_info *f
     (*jvm)->AttachCurrentThread(jvm, (void**) &env, NULL);
     jobject callbackObject = fuse_get_context()->private_data;
     jstring jFileName = (*env)->NewStringUTF(env, path);
-    jint jmode = mode;
+    jint jmode = (jint) mode;
     jclass class = (*env)->GetObjectClass(env, callbackObject);
     jmethodID methodId = (*env)->GetMethodID(env, class, "create", "(Ljava/lang/String;I)Lone/papachi/fuse4j/results/CreateResult;");
     (*env)->DeleteLocalRef(env, class);
@@ -94,8 +94,8 @@ static int fuse4j_read(const char *path, char *buf, size_t size, off_t offset, s
     (*jvm)->AttachCurrentThread(jvm, (void**) &env, NULL);
     jobject callbackObject = fuse_get_context()->private_data;
     jstring jFileName = (*env)->NewStringUTF(env, path);
-    jobject jbuffer = (*env)->NewDirectByteBuffer(env, buf, size);
-    jlong joffset = offset;
+    jobject jbuffer = (*env)->NewDirectByteBuffer(env, buf, (jlong) size);
+    jlong joffset = (jlong) offset;
     jclass class = (*env)->GetObjectClass(env, callbackObject);
     jmethodID methodId = (*env)->GetMethodID(env, class, "read", "(Ljava/lang/String;Ljava/nio/ByteBuffer;J)Lone/papachi/fuse4j/results/ReadResult;");
     (*env)->DeleteLocalRef(env, class);
@@ -115,8 +115,8 @@ static int fuse4j_write(const char *path, const char *buf, size_t size, off_t of
     (*jvm)->AttachCurrentThread(jvm, (void**) &env, NULL);
     jobject callbackObject = fuse_get_context()->private_data;
     jstring jFileName = (*env)->NewStringUTF(env, path);
-    jobject jbuffer = (*env)->NewDirectByteBuffer(env, (void *) buf, size);
-    jlong joffset = offset;
+    jobject jbuffer = (*env)->NewDirectByteBuffer(env, (void *) buf, (jlong) size);
+    jlong joffset = (jlong) offset;
     jclass class = (*env)->GetObjectClass(env, callbackObject);
     jmethodID methodId = (*env)->GetMethodID(env, class, "write", "(Ljava/lang/String;Ljava/nio/ByteBuffer;J)Lone/papachi/fuse4j/results/WriteResult;");
     (*env)->DeleteLocalRef(env, class);
@@ -173,7 +173,7 @@ static int fuse4j_mkdir(const char *path, mode_t mode) {
     (*jvm)->AttachCurrentThread(jvm, (void**) &env, NULL);
     jobject callbackObject = fuse_get_context()->private_data;
     jstring jFileName = (*env)->NewStringUTF(env, path);
-    jint jmode = mode;
+    jint jmode = (jint) mode;
     jclass class = (*env)->GetObjectClass(env, callbackObject);
     jmethodID methodId = (*env)->GetMethodID(env, class, "mkdir", "(Ljava/lang/String;)Lone/papachi/fuse4j/results/MkdirResult;");
     (*env)->DeleteLocalRef(env, class);
@@ -278,7 +278,7 @@ static int fuse4j_rename(const char *from, const char *to, unsigned int flags) {
     jobject callbackObject = fuse_get_context()->private_data;
     jstring jFileName = (*env)->NewStringUTF(env, from);
     jstring jNewFileName = (*env)->NewStringUTF(env, to);
-    jint jflags = flags;
+    jint jflags = (jint) flags;
     jclass class = (*env)->GetObjectClass(env, callbackObject);
     jmethodID methodId = (*env)->GetMethodID(env, class, "rename", "(Ljava/lang/String;Ljava/lang/String;)Lone/papachi/fuse4j/results/RenameResult;");
     (*env)->DeleteLocalRef(env, class);
@@ -298,7 +298,7 @@ static int fuse4j_chmod(const char *path, mode_t mode, struct fuse_file_info *fi
     (*jvm)->AttachCurrentThread(jvm, (void**) &env, NULL);
     jobject callbackObject = fuse_get_context()->private_data;
     jstring jFileName = (*env)->NewStringUTF(env, path);
-    jint mod = mode;
+    jint mod = (jint) mode;
     jclass class = (*env)->GetObjectClass(env, callbackObject);
     jmethodID methodId = (*env)->GetMethodID(env, class, "chmod", "(Ljava/lang/String;I)Lone/papachi/fuse4j/results/ChmodResult;");
     (*env)->DeleteLocalRef(env, class);
@@ -317,8 +317,8 @@ static int fuse4j_chown(const char *path, uid_t uid, gid_t gid, struct fuse_file
     (*jvm)->AttachCurrentThread(jvm, (void**) &env, NULL);
     jobject callbackObject = fuse_get_context()->private_data;
     jstring jFileName = (*env)->NewStringUTF(env, path);
-    jint userid = uid;
-    jint groupid = gid;
+    jint userid = (jint) uid;
+    jint groupid = (jint) gid;
     jclass class = (*env)->GetObjectClass(env, callbackObject);
     jmethodID methodId = (*env)->GetMethodID(env, class, "chown", "(Ljava/lang/String;II)Lone/papachi/fuse4j/results/ChownResult;");
     (*env)->DeleteLocalRef(env, class);
@@ -383,7 +383,7 @@ static const struct fuse_operations fuse4j_operations = {
         .utimens = fuse4j_utimens
 };
 
-JNIEXPORT jint JNICALL Java_one_papachi_fuse4j_lib_Fuse4j_mount(JNIEnv *env, jobject thisObj, jobjectArray args) {
+JNIEXPORT jint JNICALL Java_one_papachi_fuse4j_Fuse4j_mount(JNIEnv *env, jobject thisObj, jobjectArray args) {
     (*env)->GetJavaVM(env, &jvm);
     int argc = (*env)->GetArrayLength(env, args);
     char *argv[argc];
