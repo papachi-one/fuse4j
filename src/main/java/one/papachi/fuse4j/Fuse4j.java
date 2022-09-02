@@ -16,12 +16,27 @@ import one.papachi.fuse4j.results.UnlinkResult;
 import one.papachi.fuse4j.results.UtimentsResult;
 import one.papachi.fuse4j.results.WriteResult;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.file.Paths;
 
 public class Fuse4j {
 
+    private static final String temporaryLibraryPath = System.getProperty("java.io.tmpdir");
+
+    private static final String library = "libfuse4j.so";
+
     static {
-        System.loadLibrary("fuse4j");
+        File file = Paths.get(temporaryLibraryPath, library).toFile();
+        try (InputStream is = Fuse4j.class.getResourceAsStream(library); OutputStream os = new FileOutputStream(file)) {
+            is.transferTo(os);
+        } catch (Exception e) {
+        }
+        file.deleteOnExit();
+        System.load(file.getAbsolutePath());
     }
 
     public GetattrResult getattr(String fileName) {
