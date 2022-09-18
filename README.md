@@ -4,6 +4,8 @@ Java library with JNI native library bindings for FUSE https://github.com/libfus
 ### JNI library (libfuse4j.so)
 - Install CMake
   - on Ubuntu: `sudo apt install cmake` or `sudo snap install cmake`
+- Install fuse3
+  - on Ubuntu: `sudo apt install fuse3`
 - Open command prompt in the project directory and run the following commands:
   - `cmake -H./native -B./native/build`
   - `cmake --build ./native/build --config Release`
